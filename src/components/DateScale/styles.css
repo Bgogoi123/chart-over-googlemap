@@ -1,0 +1,6 @@
+.date_ticks {
+  font-size: 13px;
+  transform-origin: left;
+  text-anchor: middle;
+  transform: rotate(90deg);
+}

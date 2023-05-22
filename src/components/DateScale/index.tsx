@@ -7,6 +7,12 @@ function DateScale({ dates }: { dates: Date[] }) {
   const [axisWidth, setAxisWidth] = useState(0);
 
   useEffect(() => {
+    const svg = d3.select("svg#date-scale");
+    console.log(svg);
+    svg.on("click", function (e) {
+      console.log(e);
+    });
+
     const resize = () => {
       const svgarea = document.querySelector("#axis-x");
       const width = svgarea!?.getBoundingClientRect().width;
@@ -67,25 +73,42 @@ function DateScale({ dates }: { dates: Date[] }) {
         const fullDate = `${dates[i].getDate()}-${dates[i].getMonth()}-${dates[
           i
         ].getFullYear()}`;
-        console.log({ sum }, i, fullDate);
+        // clear ticks
+        d3.selectAll(`#tick_${i}`).remove();
 
-        // append tick here.
-        svg
-          .append("line")
-          .attr("x1", sum.toString())
-          .attr("y1", "5")
-          .attr("x2", sum.toString())
-          .attr("y2", "25")
-          .attr("stroke", "black")
-          .attr("stroke-width", "3");
+        // append ticks here.
+        if (i === 0) {
+          svg
+            .append("rect")
+            .attr("id", `tick_${i}`)
+            .attr("width", "10")
+            .attr("height", "20")
+            .attr("x", function () {
+              if (i === 0) {
+                return sum.toString();
+              }
+              return (sum - 10).toString();
+            })
+            .attr("y", "5")
+            .attr("fill", "#fff")
+            .attr("stroke", "black")
+            .attr("stroke-width", "2")
+            .attr("style", "cursor: pointer");
+        }
 
         svg
           .append("text")
+          .attr("id", `tick_${i}`)
           .text(fullDate)
           .attr("fill", "black")
           .attr("class", "date_ticks")
-          .attr("x", sum.toString())
-          .attr("y", "50");
+          .attr("x", "5")
+          .attr("y", function () {
+            if (i !== 0) {
+              return (-(sum - 60)).toString();
+            }
+            return "50";
+          });
 
         sum += divided;
       }

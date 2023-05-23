@@ -8,7 +8,9 @@ function DiseaseCountByArea() {
   const [selectedDisease, setSelectedDisease] = useState<string>("");
   const [diseaseNames, setDiseaseNames] = useState<string[]>([]);
   const [dates, setDates] = useState<Date[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    new Date("2023-04-05")
+  );
 
   useEffect(() => {
     const map = createMap();
@@ -20,8 +22,6 @@ function DiseaseCountByArea() {
   useEffect(() => {
     getDiseaseNames();
   }, [diseaseCountPerCity]);
-
-  // console.log({ dates });
 
   function getDiseaseNames() {
     Object.keys(diseaseCountPerCity).forEach((city) => {
@@ -59,28 +59,33 @@ function DiseaseCountByArea() {
     return undefined;
   }
 
+  function convertDateToString(dateProp: Date) {
+    return new Date(dateProp).toISOString().slice(0, 10);
+  }
+
   function showDataOverMap(map: google.maps.Map<Element> | undefined) {
     for (const city in diseaseCountPerCity) {
       const diseaseCount = diseaseCountPerCity[city].diseasecount;
-      let data = [];
-      diseaseCount.forEach((count) => {
-        // console.log("check: ", count[selectedDisease], city, count["date"]);
-        data.push(count[selectedDisease]);
-      });
-      // console.log({ data });
 
-      new google.maps.Circle({
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: "#FF0000",
-        fillOpacity: 0.35,
-        map,
-        center: diseaseCountPerCity[city].center,
-        radius:
-          Math.sqrt(
-            diseaseCountPerCity[city].diseasecount[0][selectedDisease]
-          ) * 100,
+      diseaseCount.forEach((count) => {
+        const circleRadius =
+          convertDateToString(selectedDate) ===
+          convertDateToString(count["date"] as Date)
+            ? Math.sqrt(count[selectedDisease] as number) * 100
+            : 0;
+
+        console.log({ circleRadius });
+
+        new google.maps.Circle({
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#FF0000",
+          fillOpacity: 0.35,
+          map,
+          center: diseaseCountPerCity[city].center,
+          radius: circleRadius,
+        });
       });
     }
   }

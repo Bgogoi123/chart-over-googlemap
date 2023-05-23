@@ -7,20 +7,18 @@ function DateScale({ dates }: { dates: Date[] }) {
   const [axisWidth, setAxisWidth] = useState(0);
 
   useEffect(() => {
-    const svg = d3.select("svg#date-scale");
-    console.log(svg);
-    svg.on("click", function (e) {
-      console.log(e);
-    });
+    getSVGWidth();
+  }, []);
 
+  const getSVGWidth = () => {
     const resize = () => {
       const svgarea = document.querySelector("#axis-x");
       const width = svgarea!?.getBoundingClientRect().width;
       setAxisWidth(width);
     };
-    resize();
     window.addEventListener("resize", resize);
-  }, []);
+    resize();
+  };
 
   useEffect(() => {
     if (scaleRef.current) {
@@ -73,6 +71,7 @@ function DateScale({ dates }: { dates: Date[] }) {
         const fullDate = `${dates[i].getDate()}-${dates[i].getMonth()}-${dates[
           i
         ].getFullYear()}`;
+
         // clear ticks
         d3.selectAll(`#tick_${i}`).remove();
 

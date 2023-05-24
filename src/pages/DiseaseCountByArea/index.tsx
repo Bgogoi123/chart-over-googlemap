@@ -80,8 +80,6 @@ function DiseaseCountByArea() {
             ? Math.sqrt(count[selectedDisease] as number) * 100
             : 0;
 
-        console.log({ circleRadius });
-
         new google.maps.Circle({
           strokeColor: "#FF0000",
           strokeOpacity: 0.8,
@@ -97,7 +95,7 @@ function DiseaseCountByArea() {
   }
 
   return (
-    <div style={{ border: "3px solid black", padding: "1em" }}>
+    <div style={{ border: "1px solid black", padding: "1em", height: "90vh" }}>
       <Select data={diseaseNames} setSelectedDisease={setSelectedDisease} />
       <div
         ref={mapRef}

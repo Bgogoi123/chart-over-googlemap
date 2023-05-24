@@ -21,22 +21,17 @@ function DateScale({
     };
   });
 
-  // useEffect(() => {
-  //   if (marks.length > 0) {
-  //     const labels = document.querySelectorAll("span.MuiSlider-markLabel");
-  //     labels.forEach((label, index) => {
-  //       // console.log("left ==> ", label.getAttribute("style"));
-  //       // label.setAttribute(
-  //       //   "style",
-  //       //   `font-size: 13px;
-  //       //   transform-origin: center;
-  //       //   transform: rotate(90deg);
-  //       //   left: ${index * 10}px;
-  //       //   `
-  //       // );
-  //     });
-  //   }
-  // }, [marks]);
+  useEffect(() => {
+    if (marks.length > 0) {
+      const labels = document.querySelectorAll("span.MuiSlider-markLabel");
+      labels.forEach((label) => {
+        console.log({ label });
+        // console.log("left ==> ", label.getAttribute("style"));
+        label.classList.add("date-slider");
+        // label.setAttribute("class", "date-slider");
+      });
+    }
+  }, [marks]);
 
   useEffect(() => {
     getSVGWidth();
@@ -161,6 +156,9 @@ function DateScale({
         max={dates.length - 1}
         name="date"
         onChange={(_, value) => handleChangeSlider(value)}
+        style={{
+          width: "100%",
+        }}
       />
       {/* <div ref={scaleRef}></div> */}
     </div>

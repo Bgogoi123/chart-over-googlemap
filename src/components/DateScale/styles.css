@@ -4,3 +4,14 @@
   text-anchor: middle;
   transform: rotate(90deg);
 }
+
+.date-slider {
+  font-size: 13px;
+  transform-origin: left !important;
+  transform: rotate(90deg) !important;
+  color: #3a8589 !important;
+}
+
+.MuiSlider-root:first-child {
+  color: #3a8589;
+}

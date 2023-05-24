@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Select from "../../components/Select";
 import { diseaseCountPerCity } from "../../data/diseaseCountPerCity";
 import DateScale from "../../components/DateScale";
+import { convertDateToString } from "../../utils/functions";
 
 function DiseaseCountByArea() {
   const mapRef = useRef(null);
@@ -11,13 +12,14 @@ function DiseaseCountByArea() {
   const [selectedDate, setSelectedDate] = useState<Date>(
     new Date("2023-04-05")
   );
+  const mapref = document.getElementById("mapref");
 
   useEffect(() => {
     const map = createMap();
     if (map !== null) {
       showDataOverMap(map);
     }
-  }, [selectedDisease]);
+  }, [selectedDisease, selectedDate]);
 
   useEffect(() => {
     getDiseaseNames();
@@ -45,22 +47,26 @@ function DiseaseCountByArea() {
   }
 
   function createMap() {
-    if (mapRef.current) {
-      const map: google.maps.Map<Element> = new google.maps.Map(
-        mapRef.current,
-        {
-          center: { lat: 37.09, lng: -95.712 },
-          zoom: 5,
-          mapTypeId: "terrain",
-        }
-      );
+    if (mapref) {
+      const map: google.maps.Map<Element> = new google.maps.Map(mapref, {
+        center: { lat: 37.09, lng: -95.712 },
+        zoom: 4,
+      });
       return map;
     }
     return undefined;
-  }
 
-  function convertDateToString(dateProp: Date) {
-    return new Date(dateProp).toISOString().slice(0, 10);
+    // if (mapRef.current !== undefined && mapRef.current !== null) {
+    //   const map: google.maps.Map<Element> = new google.maps.Map(
+    //     mapRef.current,
+    //     {
+    //       center: { lat: 37.09, lng: -95.712 },
+    //       zoom: 4,
+    //     }
+    //   );
+    //   return map;
+    // }
+    // return undefined;
   }
 
   function showDataOverMap(map: google.maps.Map<Element> | undefined) {
@@ -93,8 +99,12 @@ function DiseaseCountByArea() {
   return (
     <div style={{ border: "3px solid black", padding: "1em" }}>
       <Select data={diseaseNames} setSelectedDisease={setSelectedDisease} />
-      <div ref={mapRef} style={{ width: "100%", height: "400px" }} />
-      <DateScale dates={dates} />
+      <div
+        ref={mapRef}
+        id="mapref"
+        style={{ width: "100%", height: "400px" }}
+      />
+      <DateScale dates={dates} setSelectedDate={setSelectedDate} />
     </div>
   );
 }

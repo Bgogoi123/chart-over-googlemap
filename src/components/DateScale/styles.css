@@ -6,7 +6,7 @@
 }
 
 .date-slider {
-  font-size: 13px;
+  font-size: 13px !important;
   transform-origin: left !important;
   transform: rotate(90deg) !important;
   color: #3a8589 !important;

@@ -5,21 +5,32 @@ import DateScale from "../../components/DateScale";
 import { convertDateToString } from "../../utils/functions";
 
 function DiseaseCountByArea() {
-  const mapRef = useRef(null);
   const [selectedDisease, setSelectedDisease] = useState<string>("");
   const [diseaseNames, setDiseaseNames] = useState<string[]>([]);
   const [dates, setDates] = useState<Date[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(
     new Date("2023-04-05")
   );
-  const mapref = document.getElementById("mapref");
+  const [googleMap, setGoogleMap] = useState<
+    google.maps.Map<Element> | undefined
+  >(undefined);
+  const [mapDiv, setMapDiv] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const map = createMap();
-    if (map !== null) {
-      showDataOverMap(map);
+    const mapref = document.getElementById("mapref");
+    setMapDiv(mapref);
+  }, []);
+
+  useEffect(() => {
+    if (mapDiv === null) return;
+    createMap();
+  }, [selectedDisease, selectedDate, mapDiv]);
+
+  useEffect(() => {
+    if (googleMap !== null) {
+      showDataOverMap(googleMap);
     }
-  }, [selectedDisease, selectedDate]);
+  }, [googleMap]);
 
   useEffect(() => {
     getDiseaseNames();
@@ -47,26 +58,13 @@ function DiseaseCountByArea() {
   }
 
   function createMap() {
-    if (mapref) {
-      const map: google.maps.Map<Element> = new google.maps.Map(mapref, {
+    if (mapDiv) {
+      const map: google.maps.Map<Element> = new google.maps.Map(mapDiv, {
         center: { lat: 37.09, lng: -95.712 },
         zoom: 4,
       });
-      return map;
+      setGoogleMap(map);
     }
-    return undefined;
-
-    // if (mapRef.current !== undefined && mapRef.current !== null) {
-    //   const map: google.maps.Map<Element> = new google.maps.Map(
-    //     mapRef.current,
-    //     {
-    //       center: { lat: 37.09, lng: -95.712 },
-    //       zoom: 4,
-    //     }
-    //   );
-    //   return map;
-    // }
-    // return undefined;
   }
 
   function showDataOverMap(map: google.maps.Map<Element> | undefined) {
@@ -97,11 +95,7 @@ function DiseaseCountByArea() {
   return (
     <div style={{ border: "1px solid black", padding: "1em", height: "90vh" }}>
       <Select data={diseaseNames} setSelectedDisease={setSelectedDisease} />
-      <div
-        ref={mapRef}
-        id="mapref"
-        style={{ width: "100%", height: "400px" }}
-      />
+      <div id="mapref" style={{ width: "100%", height: "400px" }} />
       <DateScale dates={dates} setSelectedDate={setSelectedDate} />
     </div>
   );

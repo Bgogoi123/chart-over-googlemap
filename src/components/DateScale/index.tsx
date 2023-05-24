@@ -25,10 +25,7 @@ function DateScale({
     if (marks.length > 0) {
       const labels = document.querySelectorAll("span.MuiSlider-markLabel");
       labels.forEach((label) => {
-        console.log({ label });
-        // console.log("left ==> ", label.getAttribute("style"));
         label.classList.add("date-slider");
-        // label.setAttribute("class", "date-slider");
       });
     }
   }, [marks]);

@@ -1,10 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "./styles.css";
+import { Slider } from "@mui/material";
+import { convertDateToString } from "../../utils/functions";
 
-function DateScale({ dates }: { dates: Date[] }) {
+function DateScale({
+  dates,
+  setSelectedDate,
+}: {
+  dates: Date[];
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
+}) {
   const scaleRef = useRef<HTMLDivElement>(null);
   const [axisWidth, setAxisWidth] = useState(0);
+
+  const marks = dates.map((datum, index) => {
+    return {
+      value: index,
+      label: convertDateToString(datum),
+    };
+  });
+
+  // useEffect(() => {
+  //   if (marks.length > 0) {
+  //     const labels = document.querySelectorAll("span.MuiSlider-markLabel");
+  //     labels.forEach((label, index) => {
+  //       // console.log("left ==> ", label.getAttribute("style"));
+  //       // label.setAttribute(
+  //       //   "style",
+  //       //   `font-size: 13px;
+  //       //   transform-origin: center;
+  //       //   transform: rotate(90deg);
+  //       //   left: ${index * 10}px;
+  //       //   `
+  //       // );
+  //     });
+  //   }
+  // }, [marks]);
 
   useEffect(() => {
     getSVGWidth();
@@ -114,7 +146,25 @@ function DateScale({ dates }: { dates: Date[] }) {
     }
   };
 
-  return <div ref={scaleRef}></div>;
+  const handleChangeSlider = (value: number | number[]) => {
+    setSelectedDate(dates[value as number]);
+  };
+
+  return (
+    <div>
+      <Slider
+        aria-label="Date"
+        color="secondary"
+        step={1}
+        marks={marks}
+        min={0}
+        max={dates.length - 1}
+        name="date"
+        onChange={(_, value) => handleChangeSlider(value)}
+      />
+      {/* <div ref={scaleRef}></div> */}
+    </div>
+  );
 }
 
 export default DateScale;

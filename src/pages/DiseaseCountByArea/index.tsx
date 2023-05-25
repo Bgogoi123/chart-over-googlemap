@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import Select from "../../components/Select";
-import { diseaseCountPerCity } from "../../data/diseaseCountPerCity";
+import { useEffect, useState } from "react";
 import DateScale from "../../components/DateScale";
+import MultiSelect from "../../components/MultiSelect";
+import { diseaseCountPerCity } from "../../data/diseaseCountPerCity";
 import { convertDateToString } from "../../utils/functions";
 
+const DISEASE_COLORS = ["purple", "lightblue", "yellow", "red"];
+
 function DiseaseCountByArea() {
-  const [selectedDisease, setSelectedDisease] = useState<string>("");
+  const [selectedDisease, setSelectedDisease] = useState<string[]>([]);
   const [diseaseNames, setDiseaseNames] = useState<string[]>([]);
   const [dates, setDates] = useState<Date[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(
@@ -15,6 +17,7 @@ function DiseaseCountByArea() {
     google.maps.Map<Element> | undefined
   >(undefined);
   const [mapDiv, setMapDiv] = useState<HTMLElement | null>(null);
+  const [diseaseColors, setDiseaseColors] = useState<string[]>(DISEASE_COLORS);
 
   useEffect(() => {
     const mapref = document.getElementById("mapref");
@@ -72,21 +75,32 @@ function DiseaseCountByArea() {
       const diseaseCount = diseaseCountPerCity[city].diseasecount;
 
       diseaseCount.forEach((count) => {
-        const circleRadius =
-          convertDateToString(selectedDate) ===
-          convertDateToString(count["date"] as Date)
-            ? Math.sqrt(count[selectedDisease] as number) * 100
-            : 0;
+        selectedDisease.forEach((disease, diseaseIndex) => {
+          const circleRadius =
+            convertDateToString(selectedDate) ===
+            convertDateToString(count["date"] as Date)
+              ? Math.sqrt(count[disease] as number) * 100
+              : 0;
 
-        new google.maps.Circle({
-          strokeColor: "#FF0000",
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: "#FF0000",
-          fillOpacity: 0.35,
-          map,
-          center: diseaseCountPerCity[city].center,
-          radius: circleRadius,
+          new google.maps.Circle({
+            strokeColor: diseaseColors[diseaseIndex],
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: diseaseColors[diseaseIndex],
+            fillOpacity: 0.35,
+            map,
+            center: diseaseCountPerCity[city].center,
+            radius: circleRadius,
+            clickable: true,
+          }).addListener("click", () => {
+            // show ditails on a drawer that opens from right side.
+            const details = {
+              city,
+              disease: selectedDisease,
+              diseaseCount: count[disease],
+              date: selectedDate,
+            };
+          });
         });
       });
     }
@@ -94,7 +108,11 @@ function DiseaseCountByArea() {
 
   return (
     <div style={{ border: "1px solid black", padding: "1em", height: "90vh" }}>
-      <Select data={diseaseNames} setSelectedDisease={setSelectedDisease} />
+      <MultiSelect
+        data={diseaseNames}
+        selectedDisease={selectedDisease}
+        setSelectedDisease={setSelectedDisease}
+      />
       <div id="mapref" style={{ width: "100%", height: "400px" }} />
       <DateScale dates={dates} setSelectedDate={setSelectedDate} />
     </div>

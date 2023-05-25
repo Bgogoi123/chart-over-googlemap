@@ -1,10 +1,3 @@
-.date_ticks {
-  font-size: 13px;
-  transform-origin: left;
-  text-anchor: middle;
-  transform: rotate(90deg);
-}
-
 .date-slider {
   font-size: 13px !important;
   transform-origin: left !important;

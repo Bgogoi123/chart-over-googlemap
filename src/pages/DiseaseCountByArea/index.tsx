@@ -19,20 +19,15 @@ function DiseaseCountByArea() {
   const [mapDiv, setMapDiv] = useState<HTMLElement | null>(null);
   const [diseaseColors, _] = useState<string[]>(DISEASE_COLORS);
 
-  const styledMapType = new google.maps.StyledMapType(
+  const lightMapConfiguration = new google.maps.StyledMapType(
     [
-      { elementType: "geometry", stylers: [{ color: "#ebe3cd" }] },
-      { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] },
-      { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] },
+      { elementType: "geometry", stylers: [{ color: "#d6d6d6" }] }, //some part of land
+      { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] }, //text color
+      { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] }, //text background
       {
         featureType: "administrative",
         elementType: "geometry.stroke",
-        stylers: [{ color: "#c9b2a6" }],
-      },
-      {
-        featureType: "administrative.land_parcel",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#dcd2be" }],
+        stylers: [{ color: "#c9b2a6" }], //stright and dotted lines on initial zoom
       },
       {
         featureType: "administrative.land_parcel",
@@ -42,12 +37,12 @@ function DiseaseCountByArea() {
       {
         featureType: "landscape.natural",
         elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
+        stylers: [{ color: "#ededeb" }], // main land
       },
       {
         featureType: "poi",
         elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
+        stylers: [{ color: "#d7dbd9" }],
       },
       {
         featureType: "poi",
@@ -57,7 +52,7 @@ function DiseaseCountByArea() {
       {
         featureType: "poi.park",
         elementType: "geometry.fill",
-        stylers: [{ color: "#a5b076" }],
+        stylers: [{ color: "#dce8e2" }], // parks
       },
       {
         featureType: "poi.park",
@@ -67,32 +62,32 @@ function DiseaseCountByArea() {
       {
         featureType: "road",
         elementType: "geometry",
-        stylers: [{ color: "#f5f1e6" }],
+        stylers: [{ color: "#ffffff" }],
       },
       {
         featureType: "road.arterial",
         elementType: "geometry",
-        stylers: [{ color: "#fdfcf8" }],
+        stylers: [{ color: "#ffffff" }],
       },
       {
         featureType: "road.highway",
         elementType: "geometry",
-        stylers: [{ color: "#f8c967" }],
+        stylers: [{ color: "#ffffff" }],
       },
       {
         featureType: "road.highway",
         elementType: "geometry.stroke",
-        stylers: [{ color: "#e9bc62" }],
+        stylers: [{ color: "#ffffff" }],
       },
       {
         featureType: "road.highway.controlled_access",
         elementType: "geometry",
-        stylers: [{ color: "#e98d58" }],
+        stylers: [{ color: "#ffffff" }],
       },
       {
         featureType: "road.highway.controlled_access",
         elementType: "geometry.stroke",
-        stylers: [{ color: "#db8555" }],
+        stylers: [{ color: "#ffffff" }],
       },
       {
         featureType: "road.local",
@@ -102,7 +97,7 @@ function DiseaseCountByArea() {
       {
         featureType: "transit.line",
         elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
+        stylers: [{ color: "#b3b4ba" }],
       },
       {
         featureType: "transit.line",
@@ -122,15 +117,16 @@ function DiseaseCountByArea() {
       {
         featureType: "water",
         elementType: "geometry.fill",
-        stylers: [{ color: "#b9d3c2" }],
+        stylers: [{ color: "#cccccc" }],
       },
       {
         featureType: "water",
         elementType: "labels.text.fill",
-        stylers: [{ color: "#92998d" }],
+        stylers: [{ color: "#044978" }],
       },
     ],
-    { name: "Styled Map" }
+
+    { name: "Light Map" }
   );
 
   useEffect(() => {
@@ -145,8 +141,8 @@ function DiseaseCountByArea() {
 
   useEffect(() => {
     if (googleMap !== null && googleMap !== undefined) {
-      googleMap.mapTypes.set("styled_map", styledMapType);
-      googleMap.setMapTypeId("styled_map");
+      googleMap.mapTypes.set("light_map", lightMapConfiguration);
+      googleMap.setMapTypeId("light_map");
       showDataOverMap(googleMap);
     }
   }, [googleMap]);
@@ -187,10 +183,10 @@ function DiseaseCountByArea() {
             "satellite",
             "hybrid",
             "terrain",
-            "styled_map",
+            "light_map",
           ],
         },
-        // mapTypeId: "styled_map",
+        mapTypeId: "light_map",
       });
 
       setGoogleMap(map);
@@ -220,13 +216,14 @@ function DiseaseCountByArea() {
             radius: circleRadius,
             clickable: true,
           }).addListener("click", () => {
-            // show ditails on a drawer that opens from right side.
+            // show ditails on a drawer that opens from right side. (pending)
             const details = {
               city,
               disease: selectedDisease,
               diseaseCount: count[disease],
               date: selectedDate,
             };
+            console.log({ details });
           });
         });
       });
@@ -240,7 +237,7 @@ function DiseaseCountByArea() {
         selectedDisease={selectedDisease}
         setSelectedDisease={setSelectedDisease}
       />
-      <div id="mapref" style={{ width: "100%", height: "400px" }} />
+      <div id="mapref" style={{ width: "100%", height: "500px" }} />
       <DateScale dates={dates} setSelectedDate={setSelectedDate} />
     </div>
   );

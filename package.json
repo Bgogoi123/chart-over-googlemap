@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.13.2",
     "@types/googlemaps": "^3.43.3",
     "d3": "^7.8.4",

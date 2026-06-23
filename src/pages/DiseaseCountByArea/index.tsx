@@ -3,6 +3,9 @@ import DateScale from "../../components/DateScale";
 import MultiSelect from "../../components/MultiSelect";
 import { diseaseCountPerCity } from "../../data/diseaseCountPerCity";
 import { convertDateToString } from "../../utils/functions";
+import { Stack } from "@mui/material";
+import { TDiseaseDetails } from "../../types";
+import DiseaseDetail from "../../components/DiseaseDetail";
 
 const DISEASE_COLORS = ["purple", "lightblue", "yellow", "red"];
 
@@ -18,6 +21,7 @@ function DiseaseCountByArea() {
   >(undefined);
   const [mapDiv, setMapDiv] = useState<HTMLElement | null>(null);
   const [diseaseColors, _] = useState<string[]>(DISEASE_COLORS);
+  const [details, setDetails] = useState<TDiseaseDetails | null>(null);
 
   const lightMapConfiguration = new google.maps.StyledMapType(
     [
@@ -125,31 +129,8 @@ function DiseaseCountByArea() {
         stylers: [{ color: "#044978" }],
       },
     ],
-
     { name: "Light Map" }
   );
-
-  useEffect(() => {
-    const mapref = document.getElementById("mapref");
-    setMapDiv(mapref);
-  }, []);
-
-  useEffect(() => {
-    if (mapDiv === null) return;
-    createMap();
-  }, [selectedDisease, selectedDate, mapDiv]);
-
-  useEffect(() => {
-    if (googleMap !== null && googleMap !== undefined) {
-      googleMap.mapTypes.set("light_map", lightMapConfiguration);
-      googleMap.setMapTypeId("light_map");
-      showDataOverMap(googleMap);
-    }
-  }, [googleMap]);
-
-  useEffect(() => {
-    getDiseaseNames();
-  }, [diseaseCountPerCity]);
 
   function getDiseaseNames() {
     Object.keys(diseaseCountPerCity).forEach((city) => {
@@ -216,30 +197,62 @@ function DiseaseCountByArea() {
             radius: circleRadius,
             clickable: true,
           }).addListener("click", () => {
-            // show ditails on a drawer that opens from right side. (pending)
-            const details = {
+            // show details on a drawer that opens from right side. (pending)
+            const diseaseInfo = {
               city,
               disease: selectedDisease,
               diseaseCount: count[disease],
               date: selectedDate,
             };
-            console.log({ details });
+            setDetails(diseaseInfo);
+            console.log({ diseaseInfo });
           });
         });
       });
     }
   }
 
+  useEffect(() => {
+    const mapref = document.getElementById("mapref");
+    setMapDiv(mapref);
+  }, []);
+
+  useEffect(() => {
+    if (mapDiv === null) return;
+    createMap();
+  }, [selectedDisease, selectedDate, mapDiv]);
+
+  useEffect(() => {
+    if (googleMap !== null && googleMap !== undefined) {
+      googleMap.mapTypes.set("light_map", lightMapConfiguration);
+      googleMap.setMapTypeId("light_map");
+      showDataOverMap(googleMap);
+    }
+  }, [googleMap]);
+
+  useEffect(() => {
+    getDiseaseNames();
+  }, [diseaseCountPerCity]);
+
   return (
-    <div style={{ padding: "1em", height: "90vh" }}>
-      <MultiSelect
-        data={diseaseNames}
-        selectedDisease={selectedDisease}
-        setSelectedDisease={setSelectedDisease}
-      />
+    <Stack gap="1rem" height="90vh">
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap="4rem"
+        minHeight="100px"
+      >
+        <MultiSelect
+          data={diseaseNames}
+          selectedDisease={selectedDisease}
+          setSelectedDisease={setSelectedDisease}
+        />
+
+        {details && <DiseaseDetail data={details} resetSelection={()=>setDetails(null)} />}
+      </Stack>
       <div id="mapref" style={{ width: "100%", height: "500px" }} />
       <DateScale dates={dates} setSelectedDate={setSelectedDate} />
-    </div>
+    </Stack>
   );
 }
 

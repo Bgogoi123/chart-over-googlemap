@@ -22,41 +22,42 @@ function MultiSelect({
   };
 
   return (
-    <div style={{ padding: "0.5em 0 0.5em 0" }}>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="disease_chip">Disease</InputLabel>
-        <Select
-          labelId="disease-chip"
-          id="multiple-disease-chip"
-          multiple
-          value={selectedDisease}
-          onChange={handleChange}
-          input={
-            <OutlinedInput id="select-multiple-disease-chip" label="Chip" />
-          }
-          renderValue={(selected) => (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 0.5,
-              }}
-            >
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-        >
-          {data.map((datum) => (
-            <MenuItem key={datum} value={datum}>
-              {datum}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl sx={{ m: 1, width: 300 }}>
+      <InputLabel
+        id="disease_chip"
+        sx={{ px: "0.5rem", backgroundColor: "#fff" }}
+      >
+        Select Disease
+      </InputLabel>
+      <Select
+        labelId="disease-chip"
+        id="multiple-disease-chip"
+        multiple
+        value={selectedDisease}
+        onChange={handleChange}
+        input={<OutlinedInput id="select-multiple-disease-chip" label="Chip" />}
+        renderValue={(selected) => (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 0.5,
+            }}
+          >
+            {selected.map((value) => (
+              <Chip key={value} label={value} />
+            ))}
+          </Box>
+        )}
+      >
+        {data.map((datum) => (
+          <MenuItem key={datum} value={datum}>
+            {datum}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
 

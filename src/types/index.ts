@@ -7,7 +7,7 @@ export type TCity = {
 
 export type TDiseaseDetails =  {
   city: string;
-  disease: string[];
+  disease: string;
   diseaseCount: number | Date;
   date: Date;
 }

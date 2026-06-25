@@ -21,6 +21,7 @@ function App() {
           Click on a date (bottom) to view date-wise data.
         </Typography>
       </Stack>
+      
       <DiseaseCountByArea />
     </Stack>
   );

@@ -124,13 +124,15 @@ function DiseaseCountByArea() {
     getDiseaseNames();
   }, []);
 
+
   return (
     <Stack gap="1rem" height="90vh">
       <Stack direction="row" alignItems="center" gap="4rem" minHeight="100px">
         <MultiSelect
           data={diseaseNames}
-          selectedDisease={selectedDisease}
-          setSelectedDisease={setSelectedDisease}
+          selectedData={selectedDisease}
+          label="Select Disease"
+          onSelect={(value)=>setSelectedDisease(value)}
         />
 
         {details && (

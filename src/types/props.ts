@@ -1,7 +1,8 @@
 export type TMultiSelectProps = {
   data: string[];
-  selectedDisease: string[];
-  setSelectedDisease: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedData: string[];
+  label: string;
+  onSelect?: (value: string[]) => void;
 };
 
 export type TDateScaleProps = {

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Chip,
@@ -11,31 +12,42 @@ import { TMultiSelectProps } from "../../types/props";
 
 function MultiSelect({
   data,
-  selectedDisease,
-  setSelectedDisease,
+  selectedData,
+  label,
+  onSelect,
 }: TMultiSelectProps) {
-  const handleChange = (event: SelectChangeEvent<string[]>) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedDisease(typeof value === "string" ? value.split(",") : value);
-  };
+  const [values, setValues] = useState<typeof selectedData>(selectedData);
+  const labelId = label.toLowerCase().trim().replaceAll(" ","-")
+
+  function handleChange(event: SelectChangeEvent<string[]>) {
+    const val = event.target.value;
+
+    let names: string[] | null = null;
+    if (typeof val === "string") names = val.split(",");
+    else names = val;
+
+    setValues(names);
+    onSelect?.(names);
+  }
 
   return (
     <FormControl sx={{ m: 1, width: 300 }}>
-      <InputLabel
-        id="disease_chip"
-        sx={{ px: "0.5rem", backgroundColor: "#fff" }}
-      >
-        Select Disease
-      </InputLabel>
+      {label && (
+        <InputLabel
+          id={`${labelId}_chip`}
+          sx={{ px: "0.5rem", backgroundColor: "#fff" }}
+        >
+          {label}
+        </InputLabel>
+      )}
+
       <Select
-        labelId="disease-chip"
-        id="multiple-disease-chip"
+        labelId={`${labelId}_chip`}
+        id={`multiple-${labelId}-chip`}
         multiple
-        value={selectedDisease}
+        value={values}
         onChange={handleChange}
-        input={<OutlinedInput id="select-multiple-disease-chip" label="Chip" />}
+        input={<OutlinedInput id={`${labelId}-chip-input`} label="Chip" />}
         renderValue={(selected) => (
           <Box
             sx={{
